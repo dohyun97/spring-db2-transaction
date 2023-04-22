@@ -13,7 +13,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberRepository {
     private final EntityManager em;
-    @Transactional
+
     public void save(Member member){
         log.info("Save member");
         em.persist(member);

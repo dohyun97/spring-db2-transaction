@@ -51,4 +51,37 @@ class MemberServiceTest {
         assertTrue(logRepository.find(username).isEmpty());
     }
 
+    /**
+     * MemberService    @Transactional:ON
+     * MemberRepository @Transactional:OFF
+     * LogRepository    @Transactional:OFF
+     * 하나의 트렌젝션을 갖고 커밋 - 회원서비스에만 트랜젝션 사용
+     */
+    @Test
+    void singleTx(){
+        String username = "singleTx";
+
+        memberService.joinV1(username);
+
+        assertTrue(memberRepository.find(username).isPresent());
+        assertTrue(logRepository.find(username).isPresent());
+    }
+
+    /**
+     * MemberService    @Transactional:ON
+     * MemberRepository @Transactional:OFF
+     * LogRepository    @Transactional:OFF
+     * 하나의 트렌젝션을 갖고 LogRepository 롤백 - 회원서비스에만 트랜젝션 사용
+     */
+    @Test
+    void singleTx_fail(){
+        String username = "LogException_singleTx_fail";
+
+        assertThatThrownBy(()->memberService.joinV1(username)).isInstanceOf(RuntimeException.class);
+
+        //완전히 모든게 다 롤백
+        assertTrue(memberRepository.find(username).isEmpty());
+        assertTrue(logRepository.find(username).isEmpty());
+    }
+
 }
