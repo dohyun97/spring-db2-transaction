@@ -100,5 +100,21 @@ class MemberServiceTest {
         assertTrue(logRepository.find(username).isPresent());
     }
 
+    /**
+     * MemberService    @Transactional:ON
+     * MemberRepository @Transactional:ON
+     * LogRepository    @Transactional:ON
+     * Transaction propagation RollBack : 물리적/논리적 트랜젝션 롤백
+     */
+    @Test
+    void outerTxOn_fail(){
+        String username = "LogException_outerTxOn_fail";
+
+        assertThatThrownBy(()->memberService.joinV1(username)).isInstanceOf(RuntimeException.class);
+
+        //완전히 모든게 다 롤백
+        assertTrue(memberRepository.find(username).isEmpty());
+        assertTrue(logRepository.find(username).isEmpty());
+    }
 
 }
