@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.UnexpectedRollbackException;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -103,7 +104,7 @@ class MemberServiceTest {
     /**
      * MemberService    @Transactional:ON
      * MemberRepository @Transactional:ON
-     * LogRepository    @Transactional:ON
+     * LogRepository    @Transactional:ON Exception
      * Transaction propagation RollBack : 물리적/논리적 트랜젝션 롤백
      */
     @Test
@@ -117,4 +118,20 @@ class MemberServiceTest {
         assertTrue(logRepository.find(username).isEmpty());
     }
 
+    /**
+     * MemberService    @Transactional:ON
+     * MemberRepository @Transactional:ON
+     * LogRepository    @Transactional:ON Exception
+     * Transaction propagation RollBack : 물리적/논리적 트랜젝션 롤백
+     */
+    @Test
+    void recoverException_fail(){
+        String username = "LogException_outerTxOn_fail";
+        //memberService catch the LogRepository exception. but return UnexpectedRollbackException. not RuntimeException I throw in logRepository
+        assertThatThrownBy(()->memberService.joinV2(username)).isInstanceOf(UnexpectedRollbackException.class);
+
+        //완전히 모든게 다 롤백
+        assertTrue(memberRepository.find(username).isEmpty());
+        assertTrue(logRepository.find(username).isEmpty());
+    }
 }
