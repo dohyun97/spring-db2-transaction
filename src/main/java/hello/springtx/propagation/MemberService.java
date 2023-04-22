@@ -38,7 +38,7 @@ public class MemberService {
             logRepository.save(logMessage);
         }catch (RuntimeException e){
             log.info("Fail to save log. LogMessage = {}",logMessage.getMessage());
-            log.info("정상 흐름 변환");
+            log.info("정상 흐름 변돼");
         }
         log.info("== logRepository 호출 종료 ==");
     }

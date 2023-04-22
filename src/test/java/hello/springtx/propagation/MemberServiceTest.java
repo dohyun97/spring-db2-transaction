@@ -134,4 +134,21 @@ class MemberServiceTest {
         assertTrue(memberRepository.find(username).isEmpty());
         assertTrue(logRepository.find(username).isEmpty());
     }
+
+    /**
+     * MemberService    @Transactional:ON
+     * MemberRepository @Transactional:ON
+     * LogRepository    @Transactional(REQUIRES_NEW):ON Exception
+     * Transaction propagation RollBack : 물리적/논리적 트랜젝션 롤백
+     */
+    @Test
+    void recoverException_success(){
+        String username = "LogException_outerTxOn_fail";
+        //memberService.joinV1(username)으로 하면 RuntimeException. catch를 안해줬으므로. 또한 예외를 안잡았으므로 member도 저장이 안돼(정상흐름으로 반환 x)
+        //assertThatThrownBy(()->memberService.joinV1(username)).isInstanceOf(RuntimeException.class);
+         memberService.joinV2(username);
+        //member 저장, log 롤백
+        assertTrue(memberRepository.find(username).isPresent());
+        assertTrue(logRepository.find(username).isEmpty());
+    }
 }
