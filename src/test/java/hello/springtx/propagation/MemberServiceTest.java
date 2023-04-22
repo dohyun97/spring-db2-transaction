@@ -84,4 +84,21 @@ class MemberServiceTest {
         assertTrue(logRepository.find(username).isEmpty());
     }
 
+    /**
+     * MemberService    @Transactional:ON
+     * MemberRepository @Transactional:ON
+     * LogRepository    @Transactional:ON
+     * Transaction propagation Commit : 물리적/논리적 트랜젝션 커밋
+     */
+    @Test
+    void outerTxOn_success(){
+        String username = "outerTxOn_success";
+
+        memberService.joinV1(username);
+
+        assertTrue(memberRepository.find(username).isPresent());
+        assertTrue(logRepository.find(username).isPresent());
+    }
+
+
 }

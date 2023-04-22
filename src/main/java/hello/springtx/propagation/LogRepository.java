@@ -14,7 +14,7 @@ import java.util.Optional;
 public class LogRepository {
     private final EntityManager em;
 
-
+    @Transactional
     public void save(Log logMessage){
         em.persist(logMessage);
         if(logMessage.getMessage().contains("LogException")){
